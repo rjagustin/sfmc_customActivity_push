@@ -157,15 +157,23 @@ pre { max-height: 300px; margin: 0; padding: 10px 12px; overflow: auto; backgrou
 .dlg-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); }
 .dlg-foot div { display: flex; gap: 8px; margin-left: auto; }
 
-@media (max-width: 860px) {
-  .app { display: block; height: auto; overflow: visible; }
-  .dlg-body { grid-template-columns: minmax(0, 1fr); }
-  .form { overflow: visible; padding: 16px; }
-  .preview { overflow: visible; border-left: 0; border-top: 1px solid var(--line); }
-  .fb-row { grid-template-columns: minmax(0, 1fr); }
-  .dlg-head, .dlg-foot { padding-left: 16px; padding-right: 16px; }
-}
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-
 .app { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100dvh; overflow: hidden; background: var(--surface); }
 .head-side { display: flex; align-items: center; gap: 8px; }
+
+/* Journey Builder abre la pantalla a unos 770 px: el celular sigue al costado. */
+@media (max-width: 860px) {
+  .dlg-body { grid-template-columns: minmax(0, 1fr) 292px; }
+  .form { padding: 14px 16px 20px; }
+  .preview { padding: 12px 6px; }
+  .phone { min-height: 350px; }
+  .screen { min-height: 332px; }
+  .dlg-head, .dlg-foot { padding-left: 16px; padding-right: 16px; }
+}
+/* Pantallas angostas: un solo scroll, con los botones siempre visibles. */
+@media (max-width: 620px) {
+  .dlg-body { grid-template-columns: minmax(0, 1fr); overflow-y: auto; }
+  .form, .preview { overflow: visible; }
+  .preview { padding: 16px; border-left: 0; border-top: 1px solid var(--line); }
+  .fb-row { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

@@ -62,7 +62,6 @@ export function createApp() {
   app.disable("x-powered-by");
 
   app.get("/config.json", (req, res) => res.json(buildConfig(baseUrl(req))));
-  app.get("/api/info", (_req, res) => res.json({ sendMode: sendMode() }));
   app.get("/api/contact-attributes", (_req, res) => res.json(CONTACT_ATTRIBUTES));
 
   app.post("/execute", rawBody, authenticated(execute));

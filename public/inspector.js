@@ -572,14 +572,6 @@
     touch(false);
   }
 
-  async function loadInfo() {
-    try {
-      const res = await fetch("api/info");
-      const { sendMode } = await res.json();
-      if (sendMode === "simulado") showTag("Envío simulado: no sale ninguna notificación");
-    } catch { /* La etiqueta es solo informativa. */ }
-  }
-
   /* Inicio */
   bind();
   fillContacts();
@@ -605,5 +597,4 @@
 
   touch(false);
   loadContactGroups();
-  loadInfo();
 })();
