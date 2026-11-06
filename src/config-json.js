@@ -20,8 +20,8 @@ export function buildConfig(baseUrl) {
     metaData: { icon: "images/icon.svg", category: "message" },
     type: "RESTDECISION",
     lang: {
-      "en-US": { name: "Push al celular", description: "Envía una notificación push con texto, imagen y deep link." },
-      "es-ES": { name: "Push al celular", description: "Envía una notificación push con texto, imagen y deep link." }
+      "en-US": { name: "AWS Mobile Push", description: "Envía una notificación push con texto, imagen y deep link." },
+      "es-ES": { name: "AWS Mobile Push", description: "Envía una notificación push con texto, imagen y deep link." }
     },
     arguments: {
       execute: {
