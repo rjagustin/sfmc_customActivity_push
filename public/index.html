@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Push al celular</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header class="dlg-head">
+    <div>
+      <h2>Configurar push</h2>
+      <p class="eyebrow">Envío por AWS End User Messaging</p>
+    </div>
+    <div class="head-side">
+      <span class="tag" id="mode-tag" hidden></span>
+      <button class="x" id="cancel" type="button" aria-label="Cerrar">×</button>
+    </div>
+  </header>
+
+  <ol class="steps" id="steps"></ol>
+
+  <div class="dlg-body">
+    <form class="form" id="form">
+      <div class="pane" data-pane="0">
+        <h3>Mensaje</h3>
+        <p class="lead">Sumá datos de cada contacto con Personalizar o escribiendo <code>{{</code> en el texto.</p>
+        <div class="field">
+          <div class="field-head"><label for="title">Título</label><button class="ins" type="button" data-target="title">Personalizar</button></div>
+          <input type="text" id="title" class="tf" autocomplete="off">
+          <span class="hint count" id="title-count"></span>
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="body">Texto</label><button class="ins" type="button" data-target="body">Personalizar</button></div>
+          <textarea id="body" class="tf"></textarea>
+          <span class="hint count" id="body-count"></span>
+        </div>
+        <div class="fallbacks" id="fallbacks"></div>
+      </div>
+
+      <div class="pane" data-pane="1" hidden>
+        <h3>Imagen y enlace</h3>
+        <p class="lead">Las dos cosas son opcionales.</p>
+        <fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px">
+          <legend class="lab" style="padding:0;margin-bottom:6px">Imagen</legend>
+          <div class="choice">
+            <label><input type="radio" name="imgmode" value="none"> Sin imagen</label>
+            <label><input type="radio" name="imgmode" value="url"> Con imagen</label>
+          </div>
+        </fieldset>
+        <div class="field" id="img-fields">
+          <label for="image">URL de la imagen</label>
+          <input type="url" id="image" class="tf mono" placeholder="https://cdn.tumarca.com/promo.jpg" autocomplete="off">
+          <span class="hint" id="image-hint"></span>
+        </div>
+
+        <fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px">
+          <legend class="lab" style="padding:0;margin-bottom:6px">Al tocar la notificación</legend>
+          <div class="choice">
+            <label><input type="radio" name="action" value="OPEN_APP"> Abrir la app</label>
+            <label><input type="radio" name="action" value="DEEP_LINK"> Ir a una pantalla</label>
+            <label><input type="radio" name="action" value="URL"> Abrir una web</label>
+          </div>
+        </fieldset>
+        <div class="field" id="link-field">
+          <div class="field-head"><label for="link" id="link-label">Deep link</label><button class="ins" type="button" data-target="link">Personalizar</button></div>
+          <input type="text" id="link" class="tf mono" autocomplete="off">
+          <span class="hint" id="link-hint"></span>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="2" hidden>
+        <h3>Destinatario</h3>
+        <p class="lead">Indicá de dónde sale el dispositivo de cada contacto.</p>
+        <div class="field">
+          <label for="map-token">Token del dispositivo</label>
+          <select id="map-token" class="tf"></select>
+          <span class="hint">Campo de Journey Data con el token que registró la app.</span>
+        </div>
+        <div class="field">
+          <label for="map-platform">Plataforma</label>
+          <select id="map-platform" class="tf"></select>
+          <span class="hint">Tiene que contener Android o iOS. Define el formato del mensaje.</span>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="3" hidden>
+        <h3>Revisar</h3>
+        <ul class="checks" id="checks"></ul>
+        <dl class="rows" id="summary"></dl>
+        <details>
+          <summary>Configuración que guarda la activity</summary>
+          <pre id="json-in"></pre>
+        </details>
+      </div>
+    </form>
+
+    <aside class="preview" aria-label="Vista previa">
+      <div class="pv-controls">
+        <label for="pv-contact">Ver como
+          <select id="pv-contact"></select>
+        </label>
+      </div>
+      <div class="phone">
+        <div class="screen">
+          <div class="clock">9:41<small>sábado, 7 de noviembre</small></div>
+          <div class="notif" id="notif"></div>
+        </div>
+      </div>
+      <div class="pv-info" id="pv-info"></div>
+    </aside>
+  </div>
+
+  <footer class="dlg-foot">
+    <button class="btn" id="back" type="button">Anterior</button>
+    <div>
+      <button class="btn" id="next" type="button">Siguiente</button>
+      <button class="btn primary" id="save" type="button">Guardar</button>
+    </div>
+  </footer>
+</div>
+
+<script src="vendor/postmonger.js"></script>
+<script src="demo-data.js"></script>
+<script src="inspector.js"></script>
+</body>
+</html>

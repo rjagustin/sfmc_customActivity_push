@@ -1,0 +1,964 @@
+<meta charset="utf-8">
+<title>Push Activity Mockup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+  /* Concepto: un journey de fondo y la configuración de la activity encima,
+     como se vería dentro de la herramienta. Formulario a la izquierda, celular a la derecha. */
+  :root {
+    --bg: #eef2f6;
+    --surface: #ffffff;
+    --surface-2: #f5f7fa;
+    --fg: #1b2733;
+    --muted: #566676;
+    --line: #d3dbe3;
+    --accent: #0b5cad;
+    --accent-soft: #e2eefa;
+    --on-accent: #ffffff;
+    --ok: #1c7a4d;
+    --ok-soft: #e0f3e9;
+    --warn: #8f5a00;
+    --warn-soft: #fbf0d9;
+    --bad: #b3322a;
+    --bad-soft: #fbe6e4;
+    --code-bg: #f1f4f8;
+    --ph-frame: #10161d;
+    --ph-screen: #27384a;
+    --ph-screen-2: #4a6079;
+    --ph-card: #f7f9fb;
+    --ph-text: #17212b;
+    --ph-muted: #5b6978;
+    --font-ui: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12181f; --surface: #1b232c; --surface-2: #222c37; --fg: #e6ecf2; --muted: #9dadbc;
+      --line: #35424f; --accent: #7db8f2; --accent-soft: #1e3347; --on-accent: #0c1a28;
+      --ok: #6fd3a0; --ok-soft: #173427; --warn: #e9bb66; --warn-soft: #3a2d14;
+      --bad: #f09a93; --bad-soft: #3d1f1d; --code-bg: #151c23;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12181f; --surface: #1b232c; --surface-2: #222c37; --fg: #e6ecf2; --muted: #9dadbc;
+    --line: #35424f; --accent: #7db8f2; --accent-soft: #1e3347; --on-accent: #0c1a28;
+    --ok: #6fd3a0; --ok-soft: #173427; --warn: #e9bb66; --warn-soft: #3a2d14;
+    --bad: #f09a93; --bad-soft: #3d1f1d; --code-bg: #151c23;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 var(--font-ui); }
+  h1, h2, h3, p { margin: 0; }
+  h1, h2 { text-wrap: balance; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  code { font-family: var(--font-mono); font-size: .88em; overflow-wrap: anywhere; }
+
+  .page { display: grid; gap: 16px; max-width: 1040px; margin: 0 auto; padding-block: 20px 32px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+  .top h1 { font-size: 22px; font-weight: 700; }
+  .eyebrow { color: var(--muted); font-size: 13px; }
+  .tag { padding: 2px 10px; border-radius: 99px; background: var(--warn-soft); color: var(--warn); font-size: 13px; font-weight: 600; }
+
+  .btn { padding: 7px 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); font-weight: 600; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  .sim { display: flex; flex-wrap: wrap; align-items: end; gap: 10px 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+  .sim label { display: grid; gap: 2px; font-size: 13px; color: var(--muted); }
+  .sim select { min-width: 220px; max-width: 100%; color: var(--fg); }
+  .sim-out { flex: 1 1 260px; min-width: 0; font-size: 14px; }
+
+  .canvas-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+  .canvas { position: relative; width: 860px; height: 330px; }
+  .canvas svg { position: absolute; inset: 0; width: 860px; height: 330px; }
+  .canvas path { fill: none; stroke: var(--line); stroke-width: 2; }
+  .canvas path.hit { stroke: var(--accent); stroke-width: 3; }
+  .node { position: absolute; display: grid; gap: 1px; align-content: center; width: 196px; min-height: 74px; padding: 8px 12px; text-align: left;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; }
+  .node b { font-size: 14px; font-weight: 600; }
+  .node span { color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+  .node.hit { border-color: var(--accent); background: var(--accent-soft); }
+  .node.push { width: 244px; min-height: 104px; border: 2px solid var(--accent); background: var(--surface); }
+  .node.push:hover { background: var(--accent-soft); }
+  .node.push .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .state { justify-self: start; margin-top: 3px; padding: 0 8px; border-radius: 99px; font-size: 12px; font-weight: 600; background: var(--warn-soft); color: var(--warn); }
+  .state.done { background: var(--ok-soft); color: var(--ok); }
+  .edge { position: absolute; padding: 0 6px; background: var(--surface); color: var(--muted); font: 12px var(--font-mono); }
+
+  dialog { width: min(1120px, calc(100vw - 32px)); height: min(780px, calc(100dvh - 32px)); max-width: none; max-height: none; padding: 0;
+    color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  dialog[open] { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+  dialog::backdrop { background: rgba(10, 18, 27, .55); }
+  .dlg-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+  .dlg-head h2 { font-size: 19px; font-weight: 700; }
+  .x { width: 34px; height: 34px; flex: none; border: 0; border-radius: 4px; background: transparent; font-size: 20px; line-height: 1; }
+  .x:hover { background: var(--surface-2); }
+
+  .steps { display: flex; overflow-x: auto; gap: 4px; margin: 0; padding: 0 12px; list-style: none; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  .steps button { display: flex; align-items: center; gap: 7px; padding: 10px 10px; white-space: nowrap; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); font-weight: 600; }
+  .steps button i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--line); color: var(--fg); font-style: normal; font-size: 12px; }
+  .steps button[aria-current="step"] { color: var(--accent); border-bottom-color: var(--accent); }
+  .steps button[aria-current="step"] i { background: var(--accent); color: var(--on-accent); }
+
+  .dlg-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; min-height: 0; }
+  .form { min-width: 0; overflow-y: auto; padding: 18px 20px 28px; }
+  .pane { display: grid; gap: 16px; }
+  .pane > h3 { font-size: 17px; font-weight: 700; }
+  .lead { margin-top: -10px; color: var(--muted); }
+  .field { position: relative; display: grid; gap: 4px; }
+  .field-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; }
+  .field label, .lab { font-weight: 600; }
+  .hint { color: var(--muted); font-size: 13px; }
+  .hint.bad { color: var(--bad); font-weight: 600; }
+  input[type="text"], input[type="url"], select, textarea { width: 100%; padding: 8px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+  textarea { min-height: 82px; resize: vertical; }
+  .mono { font-family: var(--font-mono); font-size: 13px; }
+  .count { font-variant-numeric: tabular-nums; }
+  .ins { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; background: transparent; color: var(--accent); font-size: 13px; font-weight: 600; }
+  .ins:hover { background: var(--accent-soft); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .picker { position: absolute; z-index: 5; top: 28px; right: 0; display: grid; gap: 6px; width: min(430px, 100%); padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(10, 18, 27, .22); }
+  .picker.inline { top: calc(100% - 18px); left: 0; right: auto; }
+  .picker-tip { padding: 0 2px; color: var(--muted); font-size: 13px; }
+  .picker-search { width: 100%; padding: 7px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chips button { padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chips button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .picker-list { display: grid; align-content: start; gap: 1px; max-height: 250px; overflow-y: auto; overscroll-behavior: contain; }
+  .picker h4 { margin: 6px 6px 2px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .03em; }
+  .picker-item { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; padding: 5px 6px; border: 0; border-radius: 4px; background: transparent; text-align: left; }
+  .picker-item:hover, .picker-item.active { background: var(--accent-soft); }
+  .picker-item span { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; min-width: 0; }
+  .picker-item b { font-weight: 600; }
+  .picker-item code { color: var(--muted); font-size: 12px; }
+  .picker-item small { flex: none; max-width: 40%; overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .picker-empty { padding: 12px 6px; color: var(--muted); font-size: 14px; }
+
+  .fallbacks { display: grid; gap: 8px; padding: 12px 14px; background: var(--surface-2); border-radius: 6px; }
+  .fb-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 4px 10px; }
+
+  .choice { display: flex; flex-wrap: wrap; gap: 6px; }
+  .choice label { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 4px; font-weight: 500; cursor: pointer; }
+  .choice label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .choice label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .gallery button { padding: 0; border: 2px solid transparent; border-radius: 5px; background: none; overflow: hidden; }
+  .gallery button[aria-pressed="true"] { border-color: var(--accent); }
+  .gallery img { display: block; width: 100%; aspect-ratio: 2 / 1; object-fit: cover; }
+
+  .note { padding: 10px 12px; border-radius: 5px; background: var(--accent-soft); font-size: 14px; }
+  .note.warn { background: var(--warn-soft); color: var(--warn); }
+  .checks { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .checks li { display: flex; gap: 8px; align-items: baseline; }
+  .checks .mark { flex: none; font-weight: 700; color: var(--ok); }
+  .checks .no .mark { color: var(--bad); }
+  .link-btn { padding: 0; border: 0; background: none; color: var(--accent); text-align: left; text-decoration: underline; }
+  .rows { display: grid; gap: 0; margin: 0; }
+  .rows > div { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); }
+  .rows dt { color: var(--muted); }
+  .rows dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  details { border: 1px solid var(--line); border-radius: 5px; }
+  summary { padding: 8px 12px; font-weight: 600; cursor: pointer; }
+  pre { max-height: 300px; margin: 0; padding: 10px 12px; overflow: auto; background: var(--code-bg); border-top: 1px solid var(--line); font: 12.5px/1.5 var(--font-mono); }
+
+  .preview { display: grid; align-content: start; justify-items: center; gap: 10px; min-width: 0; overflow-y: auto; padding: 16px; background: var(--surface-2); border-left: 1px solid var(--line); }
+  .pv-controls { display: grid; gap: 8px; width: 100%; max-width: 280px; }
+  .pv-controls label { display: grid; gap: 2px; font-size: 13px; color: var(--muted); }
+  .pv-controls select { color: var(--fg); }
+  .phone { width: 100%; max-width: 280px; min-height: 400px; padding: 9px; border-radius: 34px; background: var(--ph-frame); }
+  .screen { position: relative; display: grid; align-content: start; gap: 12px; min-height: 382px; padding: 12px 10px 18px; border-radius: 26px; background: linear-gradient(170deg, var(--ph-screen), var(--ph-screen-2)); }
+  .clock { color: #f4f7fa; text-align: center; font-size: 42px; font-weight: 300; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .clock small { display: block; font-size: 13px; font-weight: 400; }
+  .notif { display: grid; gap: 4px; padding: 10px 12px; background: var(--ph-card); color: var(--ph-text); border-radius: 14px; box-shadow: 0 2px 10px rgba(0, 0, 0, .25); overflow-wrap: anywhere; }
+  .notif-app { display: flex; align-items: center; gap: 6px; color: var(--ph-muted); font-size: 12px; }
+  .notif-app i { width: 15px; height: 15px; border-radius: 4px; background: var(--ph-screen); }
+  .notif-title { font-size: 14px; font-weight: 700; line-height: 1.25; }
+  .notif-body { font-size: 13px; line-height: 1.3; }
+  .notif-main { display: grid; gap: 2px; min-width: 0; }
+  .notif-row { display: block; }
+  .notif-big img, .notif-big .noimg { display: block; width: 100%; aspect-ratio: 2 / 1; margin-top: 6px; object-fit: cover; border-radius: 8px; }
+  .noimg { display: grid; place-items: center; padding: 6px; background: #dde3e9; color: var(--ph-muted); font-size: 12px; text-align: center; }
+  .notif.ios .notif-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+  .notif.ios .notif-thumb img, .notif.ios .notif-thumb .noimg { width: 44px; height: 44px; object-fit: cover; border-radius: 7px; font-size: 9px; padding: 2px; }
+  .pv-info { display: grid; gap: 4px; width: 100%; max-width: 280px; font-size: 13px; color: var(--muted); }
+  .pv-info b { color: var(--fg); font-weight: 600; }
+  .pv-warn { color: var(--warn); }
+
+  .dlg-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); }
+  .dlg-foot div { display: flex; gap: 8px; margin-left: auto; }
+
+  @media (max-width: 860px) {
+    dialog[open] { display: block; overflow-y: auto; }
+    .dlg-body { grid-template-columns: minmax(0, 1fr); }
+    .form { overflow: visible; padding: 16px; }
+    .preview { overflow: visible; border-left: 0; border-top: 1px solid var(--line); }
+    .fb-row { grid-template-columns: minmax(0, 1fr); }
+    .dlg-head, .dlg-foot { padding-left: 16px; padding-right: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Journey de ejemplo</p>
+      <h1>Promo de otoño</h1>
+    </div>
+    <span class="tag">Mockup: no envía notificaciones</span>
+  </header>
+
+  <section class="sim" aria-label="Simulación">
+    <label for="sim-contact">Contacto de ejemplo
+      <select id="sim-contact"></select>
+    </label>
+    <button class="btn" id="sim-run" type="button">Simular recorrido</button>
+    <p class="sim-out" id="sim-out" role="status">Elegí un contacto para ver por qué camino seguiría según la respuesta del envío.</p>
+  </section>
+
+  <div class="canvas-wrap">
+    <div class="canvas">
+      <svg viewBox="0 0 860 330" aria-hidden="true">
+        <path id="p-in" d="M216 165 H270" />
+        <path id="p-enviado" d="M514 165 C570 165 570 60 640 60" />
+        <path id="p-token_invalido" d="M514 165 H640" />
+        <path id="p-error" d="M514 165 C570 165 570 270 640 270" />
+      </svg>
+      <div class="node" id="n-in" style="left:20px;top:128px"><b>Entrada</b><span>Data Extension PromoOtoño</span></div>
+      <button class="node push" id="open" type="button" style="left:270px;top:113px" aria-haspopup="dialog">
+        <b>Push al celular</b>
+        <span class="sum" id="node-sum"></span>
+        <span class="state" id="node-state">Sin guardar</span>
+      </button>
+      <span class="edge" style="left:560px;top:64px">enviado</span>
+      <span class="edge" style="left:520px;top:156px">token_invalido</span>
+      <span class="edge" style="left:574px;top:258px">error</span>
+      <div class="node" id="n-enviado" style="left:640px;top:23px"><b>Esperar 2 días</b><span>Sigue el journey</span></div>
+      <div class="node" id="n-token_invalido" style="left:640px;top:128px"><b>Marcar token inválido</b><span>Actualiza la Data Extension</span></div>
+      <div class="node" id="n-error" style="left:640px;top:233px"><b>Enviar por email</b><span>Canal alternativo</span></div>
+    </div>
+  </div>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlg-title">
+  <header class="dlg-head">
+    <div>
+      <h2 id="dlg-title">Configurar push</h2>
+      <p class="eyebrow">Envío por AWS End User Messaging</p>
+    </div>
+    <button class="x" id="dlg-x" type="button" aria-label="Cerrar">×</button>
+  </header>
+
+  <ol class="steps" id="steps"></ol>
+
+  <div class="dlg-body">
+    <form class="form" id="form">
+      <div class="pane" data-pane="0">
+        <h3>Mensaje</h3>
+        <p class="lead">Sumá datos de cada contacto con Personalizar o escribiendo <code>{{</code> en el texto.</p>
+        <div class="field">
+          <div class="field-head"><label for="title">Título</label><button class="ins" type="button" data-target="title">Personalizar</button></div>
+          <input type="text" id="title" class="tf">
+          <span class="hint count" id="title-count"></span>
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="body">Texto</label><button class="ins" type="button" data-target="body">Personalizar</button></div>
+          <textarea id="body" class="tf"></textarea>
+          <span class="hint count" id="body-count"></span>
+        </div>
+        <div class="fallbacks" id="fallbacks"></div>
+      </div>
+
+      <div class="pane" data-pane="1" hidden>
+        <h3>Imagen y enlace</h3>
+        <p class="lead">Las dos cosas son opcionales.</p>
+        <fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px">
+          <legend class="lab" style="padding:0;margin-bottom:6px">Imagen</legend>
+          <div class="choice">
+            <label><input type="radio" name="imgmode" value="none"> Sin imagen</label>
+            <label><input type="radio" name="imgmode" value="url"> Con imagen</label>
+          </div>
+        </fieldset>
+        <div id="img-fields" style="display:grid;gap:10px">
+          <div class="field">
+            <label for="image">URL de la imagen</label>
+            <input type="url" id="image" class="tf mono" placeholder="https://cdn.tumarca.com/promo.jpg">
+            <span class="hint" id="image-hint">Tiene que ser una URL pública con HTTPS.</span>
+          </div>
+          <div class="gallery" id="gallery" role="group" aria-label="Imágenes de ejemplo"></div>
+        </div>
+
+        <fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px">
+          <legend class="lab" style="padding:0;margin-bottom:6px">Al tocar la notificación</legend>
+          <div class="choice">
+            <label><input type="radio" name="action" value="OPEN_APP"> Abrir la app</label>
+            <label><input type="radio" name="action" value="DEEP_LINK"> Ir a una pantalla</label>
+            <label><input type="radio" name="action" value="URL"> Abrir una web</label>
+          </div>
+        </fieldset>
+        <div class="field" id="link-field">
+          <div class="field-head"><label for="link" id="link-label">Deep link</label><button class="ins" type="button" data-target="link">Personalizar</button></div>
+          <input type="text" id="link" class="tf mono">
+          <span class="hint" id="link-hint"></span>
+        </div>
+      </div>
+
+      <div class="pane" data-pane="2" hidden>
+        <h3>Destinatario</h3>
+        <p class="lead">Indicá de dónde sale el dispositivo de cada contacto.</p>
+        <div class="field">
+          <label for="map-token">Token del dispositivo</label>
+          <select id="map-token" class="tf"></select>
+          <span class="hint">Campo de Journey Data con el token que registró la app.</span>
+        </div>
+        <div class="field">
+          <label for="map-platform">Plataforma</label>
+          <select id="map-platform" class="tf"></select>
+          <span class="hint">Define el formato del mensaje: Android o iOS.</span>
+        </div>
+        <div class="field">
+          <label for="app">Aplicación en AWS</label>
+          <select id="app" class="tf">
+            <option>App Tu Marca (producción)</option>
+            <option>App Tu Marca (pruebas)</option>
+          </select>
+        </div>
+        <p class="note">Un contacto con varios dispositivos entraría al journey una vez por cada token, según cómo se arme la audiencia.</p>
+      </div>
+
+      <div class="pane" data-pane="3" hidden>
+        <h3>Revisar</h3>
+        <ul class="checks" id="checks"></ul>
+        <dl class="rows" id="summary"></dl>
+        <details>
+          <summary>Configuración que guarda la activity</summary>
+          <pre id="json-in"></pre>
+        </details>
+        <details>
+          <summary>Mensaje que recibiría AWS para este contacto</summary>
+          <pre id="json-aws"></pre>
+        </details>
+      </div>
+    </form>
+
+    <aside class="preview" aria-label="Vista previa">
+      <div class="pv-controls">
+        <label for="pv-contact">Ver como
+          <select id="pv-contact"></select>
+        </label>
+      </div>
+      <div class="phone">
+        <div class="screen">
+          <div class="clock">9:41<small>sábado, 7 de noviembre</small></div>
+          <div class="notif" id="notif"></div>
+        </div>
+      </div>
+      <div class="pv-info" id="pv-info"></div>
+    </aside>
+  </div>
+
+  <footer class="dlg-foot">
+    <button class="btn" id="back" type="button">Anterior</button>
+    <div>
+      <button class="btn" id="next" type="button">Siguiente</button>
+      <button class="btn primary" id="save" type="button">Guardar</button>
+    </div>
+  </footer>
+</dialog>
+
+<script>
+  const E = "Event.DEAudience-PromoOtono.";
+  const P = "Contact.Attribute.Perfil.";
+  const C = "Contact.Attribute.Compras.";
+  const F = "Contact.Attribute.Fidelidad.";
+  /* Campos de ejemplo: [nombre visible, ruta, valor de cada contacto de ejemplo] */
+  const FIELD_GROUPS = [
+    { group: "Journey Data", source: "journey", fields: [
+      ["Nombre", E + "FirstName", ["Lucía", "Mateo", "", "Ana"]],
+      ["Apellido", E + "LastName", ["Paz", "Ríos", "", "Soler"]],
+      ["Descuento", E + "Descuento", ["20%", "15%", "20%", "10%"]],
+      ["ID de promo", E + "PromoId", ["OTONO20", "OTONO15", "OTONO20", "OTONO10"]],
+      ["Nombre de la promo", E + "PromoNombre", ["Otoño 20", "Otoño 15", "Otoño 20", "Otoño 10"]],
+      ["Vencimiento de la promo", E + "PromoVence", ["9/11", "9/11", "9/11", "12/11"]],
+      ["Código de cupón", E + "Cupon", ["LUCIA20", "MATEO15", "", "ANA10"]],
+      ["Compra mínima", E + "CompraMinima", ["$ 20.000", "$ 15.000", "$ 20.000", "$ 10.000"]],
+      ["Categoría favorita", E + "CategoriaFavorita", ["Calzado", "Tecnología", "", "Hogar"]],
+      ["Producto recomendado", E + "ProductoRecomendado", ["Zapatillas Trail", "Auriculares X2", "", "Cafetera Duo"]],
+      ["Precio del producto", E + "PrecioProducto", ["$ 89.900", "$ 54.500", "", "$ 72.300"]],
+      ["Productos en el carrito", E + "CarritoItems", ["2", "0", "0", "1"]],
+      ["Sucursal cercana", E + "SucursalCercana", ["Nueva Córdoba", "Pichincha", "", "Godoy Cruz"]]
+    ] },
+    { group: "Contact Builder · Perfil", source: "contact", fields: [
+      ["Ciudad", P + "Ciudad", ["Córdoba", "Rosario", "", "Mendoza"]],
+      ["Provincia", P + "Provincia", ["Córdoba", "Santa Fe", "", "Mendoza"]],
+      ["Segmento", P + "Segmento", ["Frecuente", "Nuevo", "Inactivo", "Frecuente"]],
+      ["Idioma", P + "Idioma", ["es-AR", "es-AR", "es-AR", "es-AR"]],
+      ["Cumpleaños", P + "Cumpleanos", ["14/03", "02/08", "", "21/11"]],
+      ["Fecha de alta", P + "FechaAlta", ["10/02/2023", "03/10/2026", "15/06/2021", "22/07/2022"]],
+      ["Email", P + "Email", ["lucia@ejemplo.com", "mateo@ejemplo.com", "", "ana@ejemplo.com"]]
+    ] },
+    { group: "Contact Builder · Compras", source: "contact", fields: [
+      ["Última compra", C + "UltimaCompra", ["28/10", "02/11", "", "15/10"]],
+      ["Último producto", C + "UltimoProducto", ["Medias Run", "Funda X2", "", "Filtros Duo"]],
+      ["Tienda habitual", C + "Tienda", ["Online", "Pichincha", "", "Godoy Cruz"]],
+      ["Cantidad de compras", C + "Cantidad", ["14", "1", "0", "9"]],
+      ["Ticket promedio", C + "TicketPromedio", ["$ 41.200", "$ 12.800", "", "$ 33.600"]]
+    ] },
+    { group: "Contact Builder · Fidelidad", source: "contact", fields: [
+      ["Puntos", F + "Puntos", ["1.250", "320", "0", "890"]],
+      ["Nivel", F + "Nivel", ["Oro", "Inicial", "", "Plata"]],
+      ["Puntos por vencer", F + "PuntosPorVencer", ["200", "0", "0", "90"]],
+      ["Vencimiento de puntos", F + "PuntosVencen", ["31/12", "", "", "30/11"]]
+    ] }
+  ];
+  const CATALOG = FIELD_GROUPS.map(({ group, source, fields }) => ({
+    group, source, items: fields.map(([label, path]) => ({ label, path }))
+  }));
+  const CONTACTS = [
+    { name: "Lucía Paz", key: "C-10021", platform: "Android", token: "dQ3f…android-lucia", status: "SUCCESSFUL", outcome: "enviado" },
+    { name: "Mateo Ríos", key: "C-10388", platform: "iOS", token: "7b1c…ios-mateo", status: "SUCCESSFUL", outcome: "enviado" },
+    { name: "Contacto sin nombre", key: "C-11790", platform: "Android", token: "x91a…android-vencido", status: "PERMANENT_FAILURE", outcome: "token_invalido" },
+    { name: "Ana Soler", key: "C-12044", platform: "iOS", token: "a44e…ios-ana", status: "TEMPORARY_FAILURE", outcome: "error" }
+  ];
+  CONTACTS.forEach((contact, i) => {
+    contact.data = Object.fromEntries(FIELD_GROUPS.flatMap((g) => g.fields.map(([, path, values]) => [path, values[i]])));
+  });
+  const svgImage = (from, to, big, small) => "data:image/svg+xml," + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="600" height="300" fill="url(#g)"/><circle cx="510" cy="60" r="130" fill="#fff" opacity=".14"/><text x="40" y="170" font-family="sans-serif" font-size="96" font-weight="700" fill="#fff">${big}</text><text x="44" y="222" font-family="sans-serif" font-size="30" fill="#fff">${small}</text></svg>`);
+  const SAMPLES = [
+    { url: "https://cdn.tumarca.com/promos/otono-20.jpg", alt: "Banner naranja con 20% off", src: svgImage("#b5481a", "#e39a2d", "20% OFF", "Solo este fin de semana") },
+    { url: "https://cdn.tumarca.com/promos/envio-gratis.jpg", alt: "Banner verde de envío gratis", src: svgImage("#0d5f56", "#46a37f", "ENVÍO", "Gratis en tu próxima compra") },
+    { url: "https://cdn.tumarca.com/promos/puntos-x2.jpg", alt: "Banner azul de puntos dobles", src: svgImage("#1c3f8f", "#5a84d6", "PUNTOS x2", "Sumá el doble hasta el domingo") }
+  ];
+  const STEPS = ["Mensaje", "Imagen y enlace", "Destinatario", "Revisar"];
+  const LIMITS = { title: 50, body: 150 };
+  const OUTCOME_LABEL = { enviado: "Esperar 2 días", token_invalido: "Marcar token inválido", error: "Enviar por email" };
+
+  const state = {
+    step: 0, saved: false, contact: 0,
+    title: `{{${E}FirstName}}, tu descuento te espera`,
+    body: `Usá tu ${"{{"+E}Descuento}} OFF en ${"{{"+P}Ciudad}} hasta el domingo.`,
+    imgmode: "url", image: SAMPLES[0].url,
+    action: "DEEP_LINK", link: `miapp://promo/{{${E}PromoId}}`,
+    fallbacks: { [E+"FirstName"]: "Hola", [P+"Ciudad"]: "tu sucursal" },
+    mapToken: E + "DeviceToken", mapPlatform: E + "Plataforma", app: "App Tu Marca (producción)"
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const TOKEN_RE = /\{\{\s*([^{}]+?)\s*\}\}/g;
+  const labelOf = (path) => CATALOG.flatMap((g) => g.items).find((i) => i.path === path)?.label ?? path;
+  const usedPaths = () => {
+    const found = new Set();
+    for (const text of [state.title, state.body, state.action === "OPEN_APP" ? "" : state.link]) {
+      for (const m of text.matchAll(TOKEN_RE)) found.add(m[1]);
+    }
+    return [...found];
+  };
+  function resolve(text, contact, missing) {
+    return text.replace(TOKEN_RE, (_, path) => {
+      const value = contact.data[path];
+      if (value) return value;
+      missing?.add(path);
+      return state.fallbacks[path] ?? "";
+    });
+  }
+
+  function problems() {
+    const out = [];
+    if (!state.title.trim()) out.push({ text: "Falta el título", step: 0 });
+    if (!state.body.trim()) out.push({ text: "Falta el texto", step: 0 });
+    if (state.imgmode === "url" && !/^https:\/\/\S+$/i.test(state.image)) out.push({ text: "La imagen necesita una URL con HTTPS", step: 1 });
+    if (state.action === "DEEP_LINK" && !/^[a-z][a-z0-9+.-]*:\/\/\S+$/i.test(state.link)) out.push({ text: "El deep link necesita un esquema, como miapp://promo/123", step: 1 });
+    if (state.action === "URL" && !/^https:\/\/\S+$/i.test(state.link)) out.push({ text: "La web necesita una URL con HTTPS", step: 1 });
+    return out;
+  }
+
+  function awsRequest(contact) {
+    const channel = contact.platform === "iOS" ? "APNS" : "GCM";
+    const title = resolve(state.title, contact);
+    const body = resolve(state.body, contact);
+    const link = state.action === "OPEN_APP" ? "" : resolve(state.link, contact);
+    const message = { Title: title, Body: body, Action: state.action };
+    if (link) message.Url = link;
+    if (state.imgmode === "url") message[channel === "APNS" ? "MediaUrl" : "ImageUrl"] = state.image;
+    message.Data = { campaign_id: "promo_otono", ...(link && { deeplink: link }) };
+    return {
+      MessageRequest: {
+        Addresses: { [contact.token]: { ChannelType: channel } },
+        MessageConfiguration: { [channel === "APNS" ? "APNSMessage" : "GCMMessage"]: message }
+      }
+    };
+  }
+  function inArguments() {
+    return {
+      inArguments: [{
+        contactKey: "{{Contact.Key}}",
+        deviceToken: `{{${state.mapToken}}}`,
+        platform: `{{${state.mapPlatform}}}`,
+        title: state.title,
+        body: state.body,
+        imageUrl: state.imgmode === "url" ? state.image : "",
+        action: state.action,
+        url: state.action === "OPEN_APP" ? "" : state.link,
+        fallbacks: Object.fromEntries(usedPaths().map((p) => [p, state.fallbacks[p] ?? ""]))
+      }],
+      outcomes: ["enviado", "token_invalido", "error"]
+    };
+  }
+
+  function imageEl(url) {
+    const sample = SAMPLES.find((s) => s.url === url);
+    const img = document.createElement("img");
+    img.alt = sample?.alt ?? "Imagen de la notificación";
+    const fail = () => {
+      const box = document.createElement("div");
+      box.className = "noimg";
+      box.textContent = "Imagen no disponible en esta vista previa";
+      img.replaceWith(box);
+    };
+    img.addEventListener("error", fail);
+    img.src = sample?.src ?? url;
+    return img;
+  }
+
+  function renderPreview() {
+    const contact = CONTACTS[state.contact];
+    const missing = new Set();
+    const title = resolve(state.title, contact, missing);
+    const body = resolve(state.body, contact, missing);
+    const link = state.action === "OPEN_APP" ? "" : resolve(state.link, contact, missing);
+    const ios = contact.platform === "iOS";
+    const hasImage = state.imgmode === "url" && state.image.trim();
+
+    const notif = $("notif");
+    notif.className = `notif ${ios ? "ios" : "android"}`;
+    notif.replaceChildren();
+    const head = document.createElement("div");
+    head.className = "notif-app";
+    head.append(document.createElement("i"), `Tu Marca · ahora`);
+    const row = document.createElement("div");
+    row.className = "notif-row";
+    const main = document.createElement("div");
+    main.className = "notif-main";
+    const t = document.createElement("div"); t.className = "notif-title"; t.textContent = title || "Título";
+    const b = document.createElement("div"); b.className = "notif-body"; b.textContent = body || "Texto de la notificación";
+    main.append(t, b);
+    row.append(main);
+    if (hasImage && ios) {
+      const thumb = document.createElement("div"); thumb.className = "notif-thumb"; thumb.append(imageEl(state.image)); row.append(thumb);
+    }
+    notif.append(head, row);
+    if (hasImage && !ios) {
+      const big = document.createElement("div"); big.className = "notif-big"; big.append(imageEl(state.image)); notif.append(big);
+    }
+
+    const info = $("pv-info");
+    info.replaceChildren();
+    const line = (labelText, value, cls) => {
+      const p = document.createElement("p");
+      if (cls) p.className = cls;
+      if (labelText) { const s = document.createElement("b"); s.textContent = labelText + " "; p.append(s); }
+      p.append(value);
+      info.append(p);
+    };
+    line("Dispositivo:", contact.platform);
+    line("Al tocarla:", state.action === "OPEN_APP" ? "abre la app" : (link || "falta el enlace"));
+    if (missing.size) line("", `Sin dato de ${[...missing].map(labelOf).join(" y ")}: usa el texto alternativo.`, "pv-warn");
+    if (hasImage && ios) line("", "En iOS la imagen requiere una extensión en la app.");
+  }
+
+  function renderFallbacks() {
+    const paths = usedPaths();
+    const signature = paths.join("|");
+    const box = $("fallbacks");
+    if (box.dataset.sig === signature && box.childElementCount) return;
+    box.dataset.sig = signature;
+    box.replaceChildren();
+    box.hidden = !paths.length;
+    if (!paths.length) return;
+    const head = document.createElement("div");
+    head.innerHTML = `<div class="lab">Si falta un dato</div><div class="hint">Texto que se usa cuando el contacto no tiene ese campo.</div>`;
+    box.append(head);
+    paths.forEach((path, i) => {
+      const row = document.createElement("div"); row.className = "fb-row";
+      const lab = document.createElement("label"); lab.htmlFor = `fb-${i}`; lab.textContent = labelOf(path);
+      const input = document.createElement("input"); input.type = "text"; input.id = `fb-${i}`;
+      input.value = state.fallbacks[path] ?? "";
+      input.placeholder = "Dejar vacío";
+      input.addEventListener("input", () => { state.fallbacks[path] = input.value; touch(); });
+      row.append(lab, input);
+      box.append(row);
+    });
+  }
+
+  function renderSteps() {
+    const ol = $("steps");
+    ol.replaceChildren(...STEPS.map((name, i) => {
+      const li = document.createElement("li");
+      const b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = `<i>${i + 1}</i>`;
+      b.append(name);
+      if (i === state.step) b.setAttribute("aria-current", "step");
+      b.addEventListener("click", () => go(i));
+      li.append(b);
+      return li;
+    }));
+    document.querySelectorAll("[data-pane]").forEach((p) => { p.hidden = Number(p.dataset.pane) !== state.step; });
+    $("back").disabled = state.step === 0;
+    $("next").hidden = state.step === STEPS.length - 1;
+    $("save").hidden = state.step !== STEPS.length - 1;
+  }
+  function go(step) {
+    state.step = step;
+    closePicker();
+    renderSteps();
+    renderReview();
+    $("form").scrollTop = 0;
+  }
+
+  function renderReview() {
+    const issues = problems();
+    const checks = $("checks");
+    checks.replaceChildren();
+    if (!issues.length) {
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="mark">✓</span><span>Lista para guardar.</span>`;
+      checks.append(li);
+    }
+    issues.forEach((issue) => {
+      const li = document.createElement("li"); li.className = "no";
+      const mark = document.createElement("span"); mark.className = "mark"; mark.textContent = "!";
+      const btn = document.createElement("button"); btn.type = "button"; btn.className = "link-btn"; btn.textContent = issue.text;
+      btn.addEventListener("click", () => go(issue.step));
+      li.append(mark, btn);
+      checks.append(li);
+    });
+
+    const actionText = { OPEN_APP: "Abrir la app", DEEP_LINK: "Ir a una pantalla", URL: "Abrir una web" }[state.action];
+    const rows = [
+      ["Título", state.title], ["Texto", state.body],
+      ["Imagen", state.imgmode === "url" ? state.image : "Sin imagen"],
+      ["Al tocarla", state.action === "OPEN_APP" ? actionText : `${actionText}: ${state.link}`],
+      ["Respuestas", "enviado, token_invalido, error"]
+    ];
+    $("summary").replaceChildren(...rows.map(([k, v]) => {
+      const div = document.createElement("div");
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.textContent = v;
+      div.append(dt, dd);
+      return div;
+    }));
+    $("json-in").textContent = JSON.stringify(inArguments(), null, 2);
+    $("json-aws").textContent = JSON.stringify(awsRequest(CONTACTS[state.contact]), null, 2);
+  }
+
+  function renderForm() {
+    for (const [id, limit] of Object.entries(LIMITS)) {
+      const n = resolve(state[id], CONTACTS[state.contact]).length;
+      const el = $(`${id}-count`);
+      el.textContent = `${n} caracteres con este contacto · recomendado hasta ${limit}`;
+      el.classList.toggle("bad", n > limit);
+    }
+    $("img-fields").hidden = state.imgmode !== "url";
+    $("link-field").hidden = state.action === "OPEN_APP";
+    $("link-label").textContent = state.action === "URL" ? "Dirección web" : "Deep link";
+    $("link").placeholder = state.action === "URL" ? "https://www.tumarca.com/promo" : "miapp://promo/123";
+    const linkBad = problems().find((p) => p.step === 1 && p.text !== "La imagen necesita una URL con HTTPS");
+    const hint = $("link-hint");
+    hint.textContent = linkBad && state.link ? linkBad.text : (state.action === "URL" ? "Se abre en el navegador del celular." : "La app tiene que reconocer esta ruta para abrir la pantalla.");
+    hint.classList.toggle("bad", !!(linkBad && state.link));
+    const imgBad = state.imgmode === "url" && state.image && !/^https:\/\/\S+$/i.test(state.image);
+    $("image-hint").textContent = imgBad ? "La URL tiene que empezar con https://" : "Tiene que ser una URL pública con HTTPS.";
+    $("image-hint").classList.toggle("bad", !!imgBad);
+    [...$("gallery").children].forEach((btn, i) => btn.setAttribute("aria-pressed", String(SAMPLES[i].url === state.image)));
+  }
+  function renderNode() {
+    const issues = problems();
+    $("node-sum").textContent = state.title.replace(TOKEN_RE, (_, p) => `[${labelOf(p)}]`) || "Sin título";
+    const pill = $("node-state");
+    pill.textContent = state.saved && !issues.length ? "Configurada" : (issues.length ? "Falta completar" : "Sin guardar");
+    pill.classList.toggle("done", state.saved && !issues.length);
+  }
+  function touch() {
+    renderFallbacks();
+    renderForm();
+    renderPreview();
+    renderReview();
+    renderNode();
+    clearPath();
+  }
+
+  /* Selector de personalización */
+  const norm = (text) => text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  const ALL_FIELDS = CATALOG.flatMap((g) => g.items.map((item) => ({
+    ...item, group: g.group, source: g.source, key: item.path.split(".").pop()
+  })));
+  const SOURCES = [["all", "Todos"], ["journey", "Journey Data"], ["contact", "Contact Builder"]];
+  function searchFields(query, source) {
+    const words = norm(query).split(/\s+/).filter(Boolean);
+    return ALL_FIELDS.filter((f) => {
+      if (source !== "all" && f.source !== source) return false;
+      const text = norm(`${f.label} ${f.key} ${f.group}`);
+      return words.every((w) => text.includes(w));
+    });
+  }
+
+  let picker = null;
+  function closePicker() { picker?.el.remove(); picker = null; }
+
+  function renderPicker() {
+    const { el, query, source } = picker;
+    const results = searchFields(query, source);
+    picker.results = results;
+    picker.active = Math.min(picker.active, Math.max(0, results.length - 1));
+
+    el.querySelector(".chips").replaceChildren(...SOURCES.map(([value, name]) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.textContent = `${name} ${searchFields(query, value).length}`;
+      chip.setAttribute("aria-pressed", String(value === source));
+      chip.addEventListener("mousedown", (e) => e.preventDefault());
+      chip.addEventListener("click", (e) => {
+        e.stopPropagation();
+        picker.source = value;
+        picker.active = 0;
+        renderPicker();
+      });
+      return chip;
+    }));
+
+    const list = el.querySelector(".picker-list");
+    list.replaceChildren();
+    if (!results.length) {
+      const empty = document.createElement("p");
+      empty.className = "picker-empty";
+      empty.textContent = `Ningún campo coincide con “${query.trim()}”. Probá con otra palabra.`;
+      list.append(empty);
+      return;
+    }
+    const sample = CONTACTS[state.contact];
+    let lastGroup = null;
+    results.forEach((field, i) => {
+      if (field.group !== lastGroup) {
+        const h = document.createElement("h4");
+        h.textContent = field.group;
+        list.append(h);
+        lastGroup = field.group;
+      }
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = `picker-item${i === picker.active ? " active" : ""}`;
+      const name = document.createElement("span");
+      const strong = document.createElement("b"); strong.textContent = field.label;
+      const key = document.createElement("code"); key.textContent = field.key;
+      name.append(strong, key);
+      const ex = document.createElement("small");
+      ex.textContent = sample.data[field.path] || "sin dato";
+      b.append(name, ex);
+      b.addEventListener("mousedown", (e) => e.preventDefault());
+      b.addEventListener("click", (e) => { e.stopPropagation(); chooseField(field); });
+      list.append(b);
+    });
+    list.querySelector(".active")?.scrollIntoView({ block: "nearest" });
+  }
+
+  function chooseField(field) {
+    const { target, inline, from, end } = picker;
+    const to = inline ? target.selectionStart : end;
+    target.setRangeText(`{{${field.path}}}`, from, to, "end");
+    state[target.id] = target.value;
+    closePicker();
+    target.focus();
+    touch();
+  }
+
+  /* Teclado compartido por el buscador y por el autocompletado dentro del campo */
+  function pickerKey(e) {
+    if (!picker) return;
+    const count = picker.results.length;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      if (!count) return;
+      e.preventDefault();
+      picker.active = (picker.active + (e.key === "ArrowDown" ? 1 : -1) + count) % count;
+      renderPicker();
+    } else if (e.key === "Enter" || (e.key === "Tab" && picker.inline)) {
+      if (!count) { if (e.key === "Enter" && !picker.inline) e.preventDefault(); return; }
+      e.preventDefault();
+      chooseField(picker.results[picker.active]);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      const { target } = picker;
+      closePicker();
+      target.focus();
+    }
+  }
+
+  function openPicker(target, { inline = false, query = "", from, end }) {
+    closePicker();
+    const el = document.createElement("div");
+    el.className = `picker${inline ? " inline" : ""}`;
+    if (inline) {
+      const tip = document.createElement("p");
+      tip.className = "picker-tip";
+      tip.textContent = "Seguí escribiendo para filtrar. Enter para insertar.";
+      el.append(tip);
+    } else {
+      const label = document.createElement("label");
+      label.className = "sr-only";
+      label.htmlFor = "picker-q";
+      label.textContent = "Buscar campo";
+      const search = document.createElement("input");
+      search.type = "text";
+      search.id = "picker-q";
+      search.className = "picker-search";
+      search.placeholder = "Buscar por nombre o campo";
+      search.autocomplete = "off";
+      search.addEventListener("input", () => {
+        picker.query = search.value;
+        picker.active = 0;
+        renderPicker();
+      });
+      search.addEventListener("keydown", pickerKey);
+      el.append(label, search);
+    }
+    const chips = document.createElement("div");
+    chips.className = "chips";
+    const list = document.createElement("div");
+    list.className = "picker-list";
+    el.append(chips, list);
+    target.closest(".field").append(el);
+    picker = { el, target, inline, query, from, end, source: "all", active: 0, results: [] };
+    renderPicker();
+    if (!inline) el.querySelector(".picker-search").focus();
+    el.scrollIntoView({ block: "nearest" });
+  }
+
+  function togglePicker(button) {
+    const target = $(button.dataset.target);
+    if (picker && !picker.inline && picker.target === target) { closePicker(); return; }
+    const from = target.selectionStart ?? target.value.length;
+    openPicker(target, { from, end: target.selectionEnd ?? from });
+  }
+
+  /* Al escribir {{ se abre la búsqueda sin sacar el foco del campo */
+  function checkInline(target) {
+    const before = target.value.slice(0, target.selectionStart);
+    const from = before.lastIndexOf("{{");
+    const query = from >= 0 ? before.slice(from + 2) : null;
+    if (query === null || /[{}\n]/.test(query)) {
+      if (picker?.inline) closePicker();
+      return;
+    }
+    if (picker?.inline && picker.target === target) {
+      picker.query = query;
+      picker.from = from;
+      picker.active = 0;
+      renderPicker();
+    } else {
+      openPicker(target, { inline: true, query, from });
+    }
+  }
+
+  /* Simulación del recorrido */
+  function clearPath() {
+    document.querySelectorAll(".canvas .hit").forEach((el) => el.classList.remove("hit"));
+    $("sim-out").textContent = "Elegí un contacto para ver por qué camino seguiría según la respuesta del envío.";
+  }
+  function simulate() {
+    clearPath();
+    const issues = problems();
+    if (issues.length) {
+      $("sim-out").textContent = `Antes de simular, completá la activity: ${issues[0].text.toLowerCase()}.`;
+      return;
+    }
+    const contact = CONTACTS[Number($("sim-contact").value)];
+    ["p-in", `p-${contact.outcome}`, `n-${contact.outcome}`, "n-in"].forEach((id) => $(id).classList.add("hit"));
+    const out = $("sim-out");
+    out.replaceChildren();
+    const b = document.createElement("b"); b.textContent = contact.name;
+    const code = document.createElement("code"); code.textContent = `${contact.status} → ${contact.outcome}`;
+    out.append(b, ": ", code, `. Sigue por “${OUTCOME_LABEL[contact.outcome]}”.`);
+  }
+
+  /* Inicio */
+  const options = CONTACTS.map((c, i) => `<option value="${i}">${c.name} · ${c.platform}</option>`).join("");
+  $("sim-contact").innerHTML = options;
+  $("pv-contact").innerHTML = options;
+
+  const fields = [
+    ["map-token", "mapToken", [[E + "DeviceToken", "DeviceToken"], [E + "PushToken", "PushToken"]]],
+    ["map-platform", "mapPlatform", [[E + "Plataforma", "Plataforma"], [E + "DeviceType", "DeviceType"]]]
+  ];
+  fields.forEach(([id, key, opts]) => {
+    opts.forEach(([value, text]) => $(id).add(new Option(text, value)));
+    $(id).value = state[key];
+    $(id).addEventListener("change", () => { state[key] = $(id).value; touch(); });
+  });
+  $("app").addEventListener("change", () => { state.app = $("app").value; touch(); });
+
+  ["title", "body", "image", "link"].forEach((id) => {
+    $(id).value = state[id];
+    $(id).addEventListener("input", () => {
+      state[id] = $(id).value;
+      touch();
+      if (id !== "image") checkInline($(id));
+    });
+    if (id !== "image") {
+      $(id).addEventListener("keydown", (e) => { if (picker?.inline && picker.target === $(id)) pickerKey(e); });
+    }
+  });
+  document.querySelectorAll('input[name="imgmode"]').forEach((r) => {
+    r.checked = r.value === state.imgmode;
+    r.addEventListener("change", () => { state.imgmode = r.value; touch(); });
+  });
+  document.querySelectorAll('input[name="action"]').forEach((r) => {
+    r.checked = r.value === state.action;
+    r.addEventListener("change", () => { state.action = r.value; touch(); });
+  });
+  SAMPLES.forEach((s) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    const img = document.createElement("img"); img.src = s.src; img.alt = s.alt;
+    b.append(img);
+    b.addEventListener("click", () => { state.image = s.url; $("image").value = s.url; touch(); });
+    $("gallery").append(b);
+  });
+  document.querySelectorAll(".ins").forEach((b) => b.addEventListener("click", (e) => { e.stopPropagation(); togglePicker(b); }));
+  document.addEventListener("click", (e) => { if (picker && !picker.el.contains(e.target)) closePicker(); });
+
+  $("pv-contact").addEventListener("change", () => { state.contact = Number($("pv-contact").value); touch(); });
+  $("form").addEventListener("submit", (e) => e.preventDefault());
+  $("back").addEventListener("click", () => go(Math.max(0, state.step - 1)));
+  $("next").addEventListener("click", () => go(Math.min(STEPS.length - 1, state.step + 1)));
+  $("open").addEventListener("click", () => $("dlg").showModal());
+  $("dlg-x").addEventListener("click", () => $("dlg").close());
+  $("dlg").addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && picker) { e.preventDefault(); closePicker(); }
+  });
+  $("dlg").addEventListener("cancel", (e) => {
+    if (picker) { e.preventDefault(); closePicker(); }
+  });
+  $("save").addEventListener("click", () => {
+    if (problems().length) return;
+    state.saved = true;
+    renderNode();
+    $("dlg").close();
+  });
+  $("sim-run").addEventListener("click", simulate);
+  $("sim-contact").addEventListener("change", clearPath);
+
+  renderSteps();
+  touch();
+  $("dlg").showModal();
+</script>
